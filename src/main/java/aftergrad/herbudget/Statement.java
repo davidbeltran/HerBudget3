@@ -56,6 +56,12 @@ public class Statement {
         }
     }
     
+    public void sendToDatabase() throws IOException{
+        createExpenseList();
+        Database db = new Database(this.expenses);
+        db.fillMongoDB();
+    }
+    
     public String getPdfPath() {
         return pdfPath;
     }

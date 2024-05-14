@@ -1,14 +1,54 @@
-
 package aftergrad.herbudget;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoException;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.result.InsertManyResult;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author David Beltran
  */
 public class Database {
+    private final ArrayList<ArrayList> expenseList;
+    private final String uri;
     
+    public Database(ArrayList expenseList) {
+        this.expenseList = expenseList;
+        this.uri = "mongodb+srv://beltrannowd5:Diska1725!@herbudgetclusterjava" +
+                ".f2hiz7o.mongodb.net/?retryWrites=true&w=majority&appName=HerBudgetClusterJava";
+    }
+    
+    private List<Document> prepareMongoDoc() {
+        List<Document> docs = new ArrayList<>();
+        int id = 1;
+        for (ArrayList exp : this.expenseList) {
+            docs.add(new Document ("Date", exp.get(0)).append("Details", exp.get(1)).append("Amount", exp.get(2)));
+            id++;
+        }
+        return docs;
+    }
+    
+    public void fillMongoDB() {
+        try (MongoClient client = MongoClients.create(this.uri)) {
+            MongoDatabase db = client.getDatabase("HerBudget");
+            MongoCollection<Document> coll = db.getCollection("Expenses");
+            InsertManyResult result = coll.insertMany(prepareMongoDoc());
+            
+            result.getInsertedIds().values().forEach(doc -> System.out.println(doc.asObjectId().getValue()));
+        }
+    }
 }
-// https://www.mongodb.com/docs/drivers/java/sync/v4.3/quick-start/
+// 
 
 
 /*
