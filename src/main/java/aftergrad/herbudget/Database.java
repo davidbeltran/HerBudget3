@@ -26,7 +26,8 @@ public class Database {
         List<Document> docs = new ArrayList<>();
         int id = 1;
         for (ArrayList exp : this.expenseList) {
-            docs.add(new Document ("Date", exp.get(0)).append("Details", exp.get(1)).append("Amount", exp.get(2)));
+            docs.add(new Document("_id", id).append("Date", exp.get(0))
+                    .append("Details", exp.get(1)).append("Amount", exp.get(2)));
             id++;
         }
         return docs;
@@ -36,9 +37,12 @@ public class Database {
         try (MongoClient client = MongoClients.create(this.uri)) {
             MongoDatabase db = client.getDatabase("HerBudget");
             MongoCollection<Document> coll = db.getCollection("Expenses");
-            InsertManyResult result = coll.insertMany(prepareMongoDoc());
-            
-            result.getInsertedIds().values().forEach(doc -> System.out.println(doc.asObjectId().getValue()));
+            try {
+                coll.insertMany(prepareMongoDoc());
+            }
+            catch(Exception ex) {
+                System.out.println(ex.getMessage());
+            }
         }
     }
 }
