@@ -1,5 +1,6 @@
 package aftergrad.herbudget;
 
+import com.mongodb.MongoBulkWriteException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -34,14 +35,22 @@ public class Database {
     }
     
     public void fillMongoDB() {
+        List<Integer> insertedIds = new ArrayList<>();
         try (MongoClient client = MongoClients.create(this.uri)) {
             MongoDatabase db = client.getDatabase("HerBudget");
             MongoCollection<Document> coll = db.getCollection("Expenses");
             try {
-                coll.insertMany(prepareMongoDoc());
+                InsertManyResult result = coll.insertMany(prepareMongoDoc());
+                result.getInsertedIds().values()
+                        .forEach(doc -> insertedIds.add(doc.asInt32().getValue()));
+                System.out.println("Inserted documents with the following ids: " + insertedIds);
             }
-            catch(Exception ex) {
-                System.out.println(ex.getMessage());
+            catch(MongoBulkWriteException ex) {
+                ex.getWriteResult().getInserts()
+                        .forEach(doc -> insertedIds.add(doc.getId().asInt32().getValue()));
+                System.out.println("Duplicate entries found. " + 
+                    "successfully processed documents with the following ids: " + insertedIds);
+                System.out.println("THIS!! " + ex.getWriteResult().getInserts());
             }
         }
     }
