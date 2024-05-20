@@ -50,7 +50,11 @@ public class Database {
                         .forEach(doc -> insertedIds.add(doc.getId().asInt32().getValue()));
                 System.out.println("Duplicate entries found. " + 
                     "successfully processed documents with the following ids: " + insertedIds);
-                System.out.println("THIS!! " + ex.getWriteResult().getInserts());
+                System.out.println("message: " + ex.getMessage());
+                
+                for (Object err : ex.getWriteErrors()) {
+                    System.out.println(err.getClass());
+                }
             }
         }
     }
