@@ -9,6 +9,7 @@ import com.mongodb.client.result.InsertManyResult;
 import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 /**
  *
  * @author David Beltran
@@ -16,20 +17,30 @@ import java.util.List;
 public class Database {
     private final ArrayList<ArrayList> expenseList;
     private final String uri;
+    private final Random rand;
     
     public Database(ArrayList expenseList) {
         this.expenseList = expenseList;
         this.uri = "mongodb+srv://beltrannowd5:Diska1725!@herbudgetclusterjava" +
                 ".f2hiz7o.mongodb.net/?retryWrites=true&w=majority&appName=HerBudgetClusterJava";
+        this.rand = new Random();
+    }
+    
+    private String generateMongoID(String date, double amount)
+    {
+        int randInt = this.rand.nextInt(1000);
+        int numID = (Math.abs((int) amount)) + randInt;
+        return (String)date + numID;
     }
     
     private List<Document> prepareMongoDoc() {
         List<Document> docs = new ArrayList<>();
-        int id = 1;
+        //int id = 1;
         for (ArrayList exp : this.expenseList) {
+            String id = generateMongoID(exp.get(0), exp.get(2));
             docs.add(new Document("_id", id).append("Date", exp.get(0))
                     .append("Details", exp.get(1)).append("Amount", exp.get(2)));
-            id++;
+            //id++;
         }
         return docs;
     }
@@ -46,58 +57,21 @@ public class Database {
                 System.out.println("Inserted documents with the following ids: " + insertedIds);
             }
             catch(MongoBulkWriteException ex) {
-                ex.getWriteResult().getInserts()
-                        .forEach(doc -> insertedIds.add(doc.getId().asInt32().getValue()));
-                System.out.println("Duplicate entries found. " + 
-                    "successfully processed documents with the following ids: " + insertedIds);
-                System.out.println("message: " + ex.getMessage());
+//                ex.getWriteResult().getInserts()
+//                        .forEach(doc -> insertedIds.add(doc.getId().asInt32().getValue()));
+//                System.out.println("Duplicate entries found. " + 
+//                    "successfully processed documents with the following ids: " + insertedIds);
+//                System.out.println("message: " + ex.getMessage());
                 
-                for (Object err : ex.getWriteErrors()) {
-                    System.out.println(err.getClass());
+                for (Integer ids : insertedIds) {
+                    System.out.println(ids);
                 }
             }
         }
     }
 }
-// 
 
 
 /*
-
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoException;
-import com.mongodb.ServerApi;
-import com.mongodb.ServerApiVersion;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
-public class MongoClientConnectionExample {
-    public static void main(String[] args) {
-        String connectionString = "mongodb+srv://beltrannowd5:Diska1725!@herbudgetclusterjava.f2hiz7o.mongodb.net/?retryWrites=true&w=majority&appName=HerBudgetClusterJava";
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .serverApi(serverApi)
-                .build();
-        // Create a new client and connect to the server
-        try (MongoClient mongoClient = MongoClients.create(settings)) {
-            try {
-                // Send a ping to confirm a successful connection
-                MongoDatabase database = mongoClient.getDatabase("admin");
-                database.runCommand(new Document("ping", 1));
-                System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
-            } catch (MongoException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-
-
-
 mongodb+srv://beltrannowd5:Diska1725!@herbudgetclusterjava.f2hiz7o.mongodb.net/?retryWrites=true&w=majority&appName=HerBudgetClusterJava
 */

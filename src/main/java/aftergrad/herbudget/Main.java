@@ -1,6 +1,8 @@
 package aftergrad.herbudget;
 
 import java.io.IOException;
+import java.util.Random;
+import java.util.ArrayList;
 /**
  *
  * @author David Beltran
@@ -10,20 +12,26 @@ public class Main {
         Statement statement = new Statement("NovDec.pdf");
         //statement.getExpenses();
         statement.sendToDatabase();
-        
-        // Replace the placeholder with your MongoDB deployment's connection string
-//        String uri = "mongodb+srv://beltrannowd5:Diska1725!@herbudgetclusterjava.f2hiz7o.mongodb.net/?retryWrites=true&w=majority&appName=HerBudgetClusterJava";
-//        try (MongoClient mongoClient = MongoClients.create(uri)) {
-//            MongoDatabase database = mongoClient.getDatabase("sample_mflix");
-//            MongoCollection<Document> collection = database.getCollection("movies");
-//            Document doc = collection.find(eq("title", "Back to the Future")).first();
-//            if (doc != null) {
-//                System.out.println(doc.toJson());
-//            } else {
-//                System.out.println("No matching documents found.");
-//            }
+//        ArrayList<Double> nums = new ArrayList<>();
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        nums.add(-307.38);
+//        Random rand = new Random();
+//        for (double num : nums) {
+//            int randInt = rand.nextInt(1000);
+//            int otro = (Math.abs((int) num)) + randInt;
+//            System.out.println(otro);
 //        }
-        
-        
     }
 }
