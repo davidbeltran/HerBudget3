@@ -52,7 +52,8 @@ public class Statement {
     public void getExpenses() throws IOException{
         createExpenseList();
         for (ArrayList exp : this.expenses){
-            System.out.printf("Date: %s, Detail: %s, Amount: %.2f\n", exp.get(0), exp.get(1), exp.get(2));
+            System.out.printf("Date: %s, Detail: %s, Amount: %.2f\n", 
+                    exp.get(0), exp.get(1), exp.get(2));
         }
     }
     

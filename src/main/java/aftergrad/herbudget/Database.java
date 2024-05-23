@@ -30,7 +30,7 @@ public class Database {
     {
         int randInt = this.rand.nextInt(1000);
         int numID = (Math.abs((int) amount)) + randInt;
-        return (String)date + numID;
+        return date + numID;
     }
     
     private List<Document> prepareMongoDoc() {
