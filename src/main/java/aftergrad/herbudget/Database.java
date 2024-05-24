@@ -5,7 +5,6 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.result.InsertManyResult;
 import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,52 +25,41 @@ public class Database {
         this.rand = new Random();
     }
     
-    private String generateMongoID(String date, double amount)
+    private String generateMongoID(String date)
     {
-        int randInt = this.rand.nextInt(1000);
-        int numID = (Math.abs((int) amount)) + randInt;
-        return date + numID;
+        int randInt = this.rand.nextInt(1000) + 1000;
+        var randChar = (char)(this.rand.nextInt(26) + 'a');
+        return date + "_" + randChar + randInt;
     }
     
     private List<Document> prepareMongoDoc() {
         List<Document> docs = new ArrayList<>();
-        //int id = 1;
         for (ArrayList exp : this.expenseList) {
-            String id = generateMongoID(exp.get(0), exp.get(2));
+            String id = generateMongoID((String)exp.get(0));
             docs.add(new Document("_id", id).append("Date", exp.get(0))
                     .append("Details", exp.get(1)).append("Amount", exp.get(2)));
-            //id++;
         }
         return docs;
     }
     
     public void fillMongoDB() {
-        List<Integer> insertedIds = new ArrayList<>();
         try (MongoClient client = MongoClients.create(this.uri)) {
             MongoDatabase db = client.getDatabase("HerBudget");
             MongoCollection<Document> coll = db.getCollection("Expenses");
             try {
-                InsertManyResult result = coll.insertMany(prepareMongoDoc());
-                result.getInsertedIds().values()
-                        .forEach(doc -> insertedIds.add(doc.asInt32().getValue()));
-                System.out.println("Inserted documents with the following ids: " + insertedIds);
+                coll.insertMany(prepareMongoDoc());
             }
             catch(MongoBulkWriteException ex) {
-//                ex.getWriteResult().getInserts()
-//                        .forEach(doc -> insertedIds.add(doc.getId().asInt32().getValue()));
-//                System.out.println("Duplicate entries found. " + 
-//                    "successfully processed documents with the following ids: " + insertedIds);
-//                System.out.println("message: " + ex.getMessage());
-                
-                for (Integer ids : insertedIds) {
-                    System.out.println(ids);
-                }
+                System.out.println(ex.getMessage());
             }
         }
     }
 }
 
-
 /*
-mongodb+srv://beltrannowd5:Diska1725!@herbudgetclusterjava.f2hiz7o.mongodb.net/?retryWrites=true&w=majority&appName=HerBudgetClusterJava
+- Fill list with id's and do binary search to ensure uniqueness of id
+- add year to pdf file name
+- add pdf file name year to date in the expenseList
+- add check that pdf file is unique to avoid entering duplicate values
+- possibly type cast when adding values to expenseList
 */
