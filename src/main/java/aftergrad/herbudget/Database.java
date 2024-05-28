@@ -8,7 +8,6 @@ import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 /**
  *
  * @author David Beltran
@@ -16,28 +15,18 @@ import java.util.Random;
 public class Database {
     private final ArrayList<ArrayList> expenseList;
     private final String uri;
-    private final Random rand;
     
     public Database(ArrayList expenseList) {
         this.expenseList = expenseList;
         this.uri = "mongodb+srv://beltrannowd5:Diska1725!@herbudgetclusterjava" +
                 ".f2hiz7o.mongodb.net/?retryWrites=true&w=majority&appName=HerBudgetClusterJava";
-        this.rand = new Random();
-    }
-    
-    private String generateMongoID(String date)
-    {
-        int randInt = this.rand.nextInt(1000) + 1000;
-        var randChar = (char)(this.rand.nextInt(26) + 'a');
-        return date + "_" + randChar + randInt;
     }
     
     private List<Document> prepareMongoDoc() {
         List<Document> docs = new ArrayList<>();
         for (ArrayList exp : this.expenseList) {
-            String id = generateMongoID((String)exp.get(0));
-            docs.add(new Document("_id", id).append("Date", exp.get(0))
-                    .append("Details", exp.get(1)).append("Amount", exp.get(2)));
+            docs.add(new Document("Date", exp.get(0)).append("Details", exp.get(1))
+                    .append("Amount", exp.get(2)));
         }
         return docs;
     }
@@ -57,8 +46,7 @@ public class Database {
 }
 
 /*
-- Fill list with id's and do binary search to ensure uniqueness of id
-- add year to pdf file name
+- add duplicate check to checkDuplicatePdf() in Statement class
 - add pdf file name year to date in the expenseList
 - add check that pdf file is unique to avoid entering duplicate values
 - possibly type cast when adding values to expenseList

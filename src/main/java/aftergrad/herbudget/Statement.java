@@ -2,6 +2,7 @@ package aftergrad.herbudget;
 
 import java.util.ArrayList;
 import java.io.File;
+import java.io.FileWriter;
 import org.apache.pdfbox.pdmodel.PDDocument; 
 import org.apache.pdfbox.text.PDFTextStripper; 
 import java.io.IOException; 
@@ -36,6 +37,22 @@ public class Statement {
             doc.close();
         }
         return pdfText;
+    }
+    
+    public void checkDuplicatePdf() throws IOException{
+        String file = "idStore.txt";
+        try {
+            File idStore = new File(file);
+            if (!idStore.exists()){
+                idStore.createNewFile();
+            }
+            try (FileWriter fw = new FileWriter(file, true)) {
+                fw.write(this.pdfPath + "\n");
+                fw.close();
+            }
+        } catch (IOException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     private ArrayList<ArrayList> createExpenseList() throws IOException {
@@ -85,5 +102,8 @@ public class Statement {
         Set<String> hSet = new HashSet<>();
         hSet.add("esto");
         hSet.add("esto");
+        for (String str : hSet) {
+            System.out.println(str);
+        }
     }
 }
