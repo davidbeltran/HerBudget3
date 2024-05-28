@@ -5,6 +5,8 @@ import java.io.File;
 import org.apache.pdfbox.pdmodel.PDDocument; 
 import org.apache.pdfbox.text.PDFTextStripper; 
 import java.io.IOException; 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern; 
 import java.util.regex.Matcher;
 
@@ -77,5 +79,11 @@ public class Statement {
 
     public void setRegexPattern(String regexPattern) {
         this.regexPattern = regexPattern;
+    }
+    
+    public void practice() {
+        Set<String> hSet = new HashSet<>();
+        hSet.add("esto");
+        hSet.add("esto");
     }
 }

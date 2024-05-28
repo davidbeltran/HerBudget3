@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         Statement statement = new Statement("NovDec.pdf");
-        //statement.getExpenses();
-        statement.sendToDatabase();
+//        statement.sendToDatabase();
+        statement.practice();
     }
 }
