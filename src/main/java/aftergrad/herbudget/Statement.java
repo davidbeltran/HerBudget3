@@ -6,7 +6,12 @@ import java.io.FileWriter;
 import org.apache.pdfbox.pdmodel.PDDocument; 
 import org.apache.pdfbox.text.PDFTextStripper; 
 import java.io.IOException; 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern; 
 import java.util.regex.Matcher;
@@ -54,6 +59,10 @@ public class Statement {
             System.out.println(e.getMessage());
         }
     }
+    
+    private void searchPdf() {
+        
+    }
 
     private ArrayList<ArrayList> createExpenseList() throws IOException {
         Pattern pat = Pattern.compile(this.regexPattern);
@@ -98,12 +107,15 @@ public class Statement {
         this.regexPattern = regexPattern;
     }
     
-    public void practice() {
-        Set<String> hSet = new HashSet<>();
-        hSet.add("esto");
-        hSet.add("esto");
-        for (String str : hSet) {
-            System.out.println(str);
+    public void practice() throws IOException {
+        Path fileName = Path.of("idStore.txt");
+        String str = Files.readString(fileName);
+        Pattern pat = Pattern.compile("NovDec23.pdf");
+        Matcher mat = pat.matcher(str);
+        if(mat.find()){
+            System.out.println("FOUND");
+        } else {
+            System.out.println("NOT FOUND");
         }
     }
 }
