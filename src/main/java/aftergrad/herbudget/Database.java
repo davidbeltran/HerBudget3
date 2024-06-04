@@ -46,9 +46,6 @@ public class Database {
 }
 
 /*
-- add duplicate check to checkDuplicatePdf() in Statement class
-    + move practice() to searchPdf() in statement class
 - add pdf file name year to date in the expenseList
-- add check that pdf file is unique to avoid entering duplicate values
 - possibly type cast when adding values to expenseList
 */

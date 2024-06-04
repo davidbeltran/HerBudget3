@@ -34,7 +34,7 @@ public class Statement {
         this.expenses = new ArrayList<>();
     }
     
-    private String preparePdf(String pdfPath) throws IOException{
+    private String processPdf(String pdfPath) throws IOException{
         File file = new File(pdfPath);
         try (PDDocument doc = PDDocument.load(file)) {
             PDFTextStripper stripper = new PDFTextStripper();
@@ -44,20 +44,26 @@ public class Statement {
         return pdfText;
     }
     
-    public void checkDuplicatePdf() throws IOException{
+    private boolean checkDuplicatePdf() throws IOException{
         String file = "idStore.txt";
         try {
             File idStore = new File(file);
             if (!idStore.exists()){
                 idStore.createNewFile();
             }
-            try (FileWriter fw = new FileWriter(file, true)) {
-                fw.write(this.pdfPath + "\n");
-                fw.close();
+            if (!searchPdf(file)) {
+                try (FileWriter fw = new FileWriter(file, true)) {
+                    fw.write(this.pdfPath + "\n");
+                    fw.close();
+                }
+                return false;
+            } else {
+                System.out.printf("%s has already been processed.", this.pdfPath);
             }
         } catch (IOException e){
             System.out.println(e.getMessage());
         }
+        return true;
     }
     
     private boolean searchPdf(String file) throws IOException {
@@ -73,7 +79,7 @@ public class Statement {
 
     private ArrayList<ArrayList> createExpenseList() throws IOException {
         Pattern pat = Pattern.compile(this.regexPattern);
-        Matcher mat = pat.matcher(preparePdf(this.pdfPath));
+        Matcher mat = pat.matcher(processPdf(this.pdfPath));
         while (mat.find()) {
             ArrayList temp = new ArrayList<>();
             temp.add(mat.group(1));
@@ -93,9 +99,11 @@ public class Statement {
     }
     
     public void sendToDatabase() throws IOException{
-        createExpenseList();
-        Database db = new Database(this.expenses);
-        db.fillMongoDB();
+        if (!checkDuplicatePdf()) {
+            createExpenseList();
+            Database db = new Database(this.expenses);
+            db.fillMongoDB();
+        }
     }
     
     public String getPdfPath() {
@@ -115,14 +123,6 @@ public class Statement {
     }
     
     public void practice() throws IOException {
-        Path fileName = Path.of("idStore.txt");
-        String str = Files.readString(fileName);
-        Pattern pat = Pattern.compile("NovDec23.pdf");
-        Matcher mat = pat.matcher(str);
-        if(mat.find()){
-            System.out.println("FOUND");
-        } else {
-            System.out.println("NOT FOUND");
-        }
+        
     }
 }
