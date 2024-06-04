@@ -60,8 +60,15 @@ public class Statement {
         }
     }
     
-    private void searchPdf() {
-        
+    private boolean searchPdf(String file) throws IOException {
+        Path fileName = Path.of(file);
+        String fileContent = Files.readString(fileName);
+        Pattern rgxPat = Pattern.compile(this.pdfPath);
+        Matcher mat = rgxPat.matcher(fileContent);
+        if (mat.find()) {
+            return true;
+        }
+        return false;
     }
 
     private ArrayList<ArrayList> createExpenseList() throws IOException {
