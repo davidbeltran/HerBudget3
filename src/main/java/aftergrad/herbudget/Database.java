@@ -46,6 +46,5 @@ public class Database {
 }
 
 /*
-- add pdf file name year to date in the expenseList
 - possibly type cast when adding values to expenseList
 */

@@ -25,6 +25,7 @@ public class Statement {
     private String pdfText;
     private String regexPattern;
     private final ArrayList<ArrayList> expenses;
+    private String year;
     
     public Statement(String pdfPath) {
         this.pdfPath = pdfPath;
@@ -74,6 +75,11 @@ public class Statement {
         if (mat.find()) {
             return true;
         }
+        rgxPat = Pattern.compile("\\d{2}");
+        mat = rgxPat.matcher(this.pdfPath);
+        while (mat.find()) {
+            this.year = mat.group();
+        }
         return false;
     }
 
@@ -82,7 +88,7 @@ public class Statement {
         Matcher mat = pat.matcher(processPdf(this.pdfPath));
         while (mat.find()) {
             ArrayList temp = new ArrayList<>();
-            temp.add(mat.group(1));
+            temp.add(mat.group(1) + "/" + this.year);
             temp.add(mat.group(2));
             temp.add(Double.valueOf(mat.group(3)));
             this.expenses.add(temp);
