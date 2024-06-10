@@ -10,6 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -88,7 +90,9 @@ public class Statement {
         Matcher mat = pat.matcher(processPdf(this.pdfPath));
         while (mat.find()) {
             ArrayList temp = new ArrayList<>();
-            temp.add(mat.group(1) + "/" + this.year);
+            String strDate = mat.group(1) + "/" + this.year;
+            LocalDate locDate = LocalDate.parse(strDate, DateTimeFormatter.ofPattern("MM/dd/yy"));
+            temp.add(locDate);
             temp.add(mat.group(2));
             temp.add(Double.valueOf(mat.group(3)));
             this.expenses.add(temp);

@@ -46,5 +46,5 @@ public class Database {
 }
 
 /*
-- possibly type cast when adding values to expenseList
+add comments
 */
