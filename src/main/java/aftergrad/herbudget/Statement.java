@@ -1,3 +1,7 @@
+/**
+ *
+ * @author David Beltran
+ */
 package aftergrad.herbudget;
 
 import java.util.ArrayList;
@@ -18,10 +22,6 @@ import java.util.Set;
 import java.util.regex.Pattern; 
 import java.util.regex.Matcher;
 
-/**
- *
- * @author David Beltran
- */
 public class Statement {
     private String pdfPath;
     private String pdfText;
@@ -29,6 +29,9 @@ public class Statement {
     private final ArrayList<ArrayList> expenses;
     private String year;
     
+    /*
+    Statement class constructor
+    */
     public Statement(String pdfPath) {
         this.pdfPath = pdfPath;
         this.regexPattern = "(?:\\n((?:0[1-9]|1[1,2])/(?:0[1-9]|[12][0-9]|3[01]))\\s*(.+)" +
@@ -37,6 +40,9 @@ public class Statement {
         this.expenses = new ArrayList<>();
     }
     
+    /*
+    Strips PDF file and returns a string with PDF text
+    */
     private String processPdf(String pdfPath) throws IOException{
         File file = new File(pdfPath);
         try (PDDocument doc = PDDocument.load(file)) {
@@ -47,6 +53,10 @@ public class Statement {
         return pdfText;
     }
     
+    /*
+    Checks if PDF file has been processed. If not processed the PDF file name is 
+    stored in a text file to ensure only new data is stored in MongoDB
+    */
     private boolean checkDuplicatePdf() throws IOException{
         String file = "idStore.txt";
         try {
@@ -69,6 +79,10 @@ public class Statement {
         return true;
     }
     
+    /*
+    Searches text file with PDF file names for duplicates.
+    Registers the PDF file name's year to be used for expense date storage
+    */
     private boolean searchPdf(String file) throws IOException {
         Path fileName = Path.of(file);
         String fileContent = Files.readString(fileName);
@@ -85,6 +99,10 @@ public class Statement {
         return false;
     }
 
+    /*
+    Regex used to find pattern of expense information and stripped.
+    Information is stored in ArrayList and returned to send to Database object
+    */
     private ArrayList<ArrayList> createExpenseList() throws IOException {
         Pattern pat = Pattern.compile(this.regexPattern);
         Matcher mat = pat.matcher(processPdf(this.pdfPath));
@@ -100,6 +118,9 @@ public class Statement {
         return this.expenses;
     }
     
+    /*
+    Displays expense information to console
+    */
     public void getExpenses() throws IOException{
         createExpenseList();
         for (ArrayList exp : this.expenses){
@@ -108,6 +129,9 @@ public class Statement {
         }
     }
     
+    /*
+    Sends ArrayList of PDF stripped expenses to Database object
+    */
     public void sendToDatabase() throws IOException{
         if (!checkDuplicatePdf()) {
             createExpenseList();
@@ -116,6 +140,9 @@ public class Statement {
         }
     }
     
+    /*
+    Getters and setters
+    */
     public String getPdfPath() {
         return pdfPath;
     }
@@ -132,6 +159,9 @@ public class Statement {
         this.regexPattern = regexPattern;
     }
     
+    /*
+    tester method
+    */
     public void practice() throws IOException {
         
     }
